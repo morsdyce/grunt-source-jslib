@@ -6,6 +6,10 @@ module.exports = (grunt) ->
   #initialise config
   grunt.initConfig
     source: grunt.source
+    banner: """
+      // <%= source.title %> - v<%= source.version %> - <%= source.homepage %>
+      // © <%= source.author %> <%= grunt.template.today(\"yyyy\") %>\n
+      """
     #watcher
     watch:
       scripts:
@@ -26,17 +30,22 @@ module.exports = (grunt) ->
         options:
           bare: true
           join: true
+
+    concat:
+      wrap:
+        options:
+          banner: "<%= banner %>(function(window,document,undefined) {\n"
+          footer: "}(window,document));"
+        src: 'dist/<%= source.name %>.js'
+        dest: 'dist/<%= source.name %>.js'
+
     uglify:
       compress:
         options:
-          banner: """
-            /** <%= source.title %> - v<%= source.version %>
-              * <%= source.homepage %>
-              * <%= template.today("YYYY") %>
-              */
-            """
+          banner: "<%= banner %>"
+          report: if grunt.option("report") then "gzip" else false
         files:
           "dist/<%= source.name %>.min.js": "dist/<%= source.name %>.js"
 
-  grunt.registerTask "scripts", ["coffee","uglify"]
+  grunt.registerTask "scripts", ["coffee","concat","uglify"]
   grunt.registerTask "default", ["scripts","watch"]
