@@ -30,6 +30,7 @@ module.exports = (grunt) ->
         options:
           bare: true
           join: true
+          sourceMap: grunt.option("source-map")
 
     concat:
       wrap:
