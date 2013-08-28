@@ -8,12 +8,12 @@ module.exports = (grunt) ->
     source: grunt.source
     banner: """
       // <%= source.title %> - v<%= source.version %> - <%= source.homepage %>
-      // © <%= source.author %> <%= grunt.template.today(\"yyyy\") %>\n
+      // <%= source.author %> - <%= source.license %> Copyright <%= grunt.template.today(\"yyyy\") %>\n
       """
     #watcher
     watch:
       scripts:
-        files: 'src/**/*.coffee'
+        files: ['vendor/**/*.js','src/**/*.coffee']
         tasks: 'scripts'
     #tasks
     coffee:
@@ -37,7 +37,7 @@ module.exports = (grunt) ->
         options:
           banner: "<%= banner %>(function(window,document,undefined) {\n"
           footer: "}(window,document));"
-        src: 'dist/<%= source.name %>.js'
+        src: ['vendor/**/*.js','dist/<%= source.name %>.js']
         dest: 'dist/<%= source.name %>.js'
 
     uglify:
