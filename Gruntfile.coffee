@@ -3,6 +3,9 @@ module.exports = (grunt) ->
   #load external tasks and change working directory
   grunt.source.loadAllTasks()
 
+  #jquery plugin
+  jquery = grunt.source.jquery
+
   #initialise config
   grunt.initConfig
     source: grunt.source
@@ -35,8 +38,8 @@ module.exports = (grunt) ->
     concat:
       wrap:
         options:
-          banner: "<%= banner %>(function(window,document,undefined) {\n"
-          footer: "}(window,document));"
+          banner: "<%= banner %>(function(window,document#{if jquery then ',$' else ''},undefined) {\n"
+          footer: "}(window,document#{if jquery then ',jQuery' else ''}));"
         src: ['vendor/**/*.js','dist/<%= source.name %>.js']
         dest: 'dist/<%= source.name %>.js'
 
@@ -48,5 +51,9 @@ module.exports = (grunt) ->
         files:
           "dist/<%= source.name %>.min.js": "dist/<%= source.name %>.js"
 
+  pkg = []
+  pkg.push "jquery" if jquery
+
   grunt.registerTask "scripts", ["coffee","concat","uglify"]
-  grunt.registerTask "default", ["scripts","watch"]
+  grunt.registerTask "package", pkg
+  grunt.registerTask "default", ["package","scripts","watch"]
