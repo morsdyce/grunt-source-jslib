@@ -9,6 +9,9 @@ module.exports = (grunt) ->
   #initialise config
   grunt.initConfig
     source: grunt.source
+
+    dist: "dist/<%= source.version.split('.')[0] %>/<%= source.name %>"
+
     banner: """
       // <%= source.title %> - v<%= source.version %> - <%= source.homepage %>
       // <%= source.author %> - <%= source.license %> Copyright <%= grunt.template.today(\"yyyy\") %>\n
@@ -16,14 +19,14 @@ module.exports = (grunt) ->
     #watcher
     watch:
       scripts:
-        files: ['vendor/**/*.js','src/**/*.coffee']
+        files: ['vendor/**/*.js','src/**/*.{js,coffee}']
         tasks: 'scripts'
     #tasks
     coffee:
       compile:
         files:
           #init then all then run
-          "dist/<%= source.name %>.js": [
+          "<%= dist %>.js": [
             "src/init.coffee",
             "src/**/*.coffee",
             #remove and re-add to insert at bottom
@@ -40,8 +43,8 @@ module.exports = (grunt) ->
         options:
           banner: "<%= banner %>(function(window,document#{if jquery then ',$' else ''},undefined) {\n"
           footer: "}(window,document#{if jquery then ',jQuery' else ''}));"
-        src: ['vendor/**/*.js','dist/<%= source.name %>.js']
-        dest: 'dist/<%= source.name %>.js'
+        src: ['vendor/**/*.js', 'src/**/*.js', '<%= dist %>.js']
+        dest: '<%= dist %>.js'
 
     uglify:
       compress:
@@ -49,7 +52,7 @@ module.exports = (grunt) ->
           banner: "<%= banner %>"
           report: if grunt.option("report") then "gzip" else false
         files:
-          "dist/<%= source.name %>.min.js": "dist/<%= source.name %>.js"
+          "<%= dist %>.min.js": "<%= dist %>.js"
 
   pkg = []
   pkg.push "jquery" if jquery
