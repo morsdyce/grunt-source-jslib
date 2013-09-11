@@ -3,6 +3,10 @@ module.exports = (grunt) ->
   #load external tasks and change working directory
   grunt.source.loadAllTasks()
 
+  versions = grunt.source.version.split('.')
+  compat = versions[0]
+  compat += "." + versions[1] if compat is "0"
+
   #jquery plugin
   jquery = grunt.source.jquery
 
@@ -10,7 +14,7 @@ module.exports = (grunt) ->
   grunt.initConfig
     source: grunt.source
 
-    dist: "dist/<%= source.version.split('.')[0] %>/<%= source.name %>"
+    dist: "dist/#{compat}/<%= source.name %>"
 
     banner: """
       // <%= source.title %> - v<%= source.version %> - <%= source.homepage %>
