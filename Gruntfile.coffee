@@ -26,6 +26,8 @@ module.exports = (grunt) ->
       """
     #watcher
     watch:
+      options:
+        livereload: true
       scripts:
         files: ['vendor/**/*.js','src/**/*.{js,coffee}']
         tasks: 'scripts'
