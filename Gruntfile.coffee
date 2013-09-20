@@ -27,7 +27,7 @@ module.exports = (grunt) ->
     #watcher
     watch:
       options:
-        livereload: true
+        livereload: grunt.option('livereload')
       scripts:
         files: ['vendor/**/*.js','src/**/*.{js,coffee}']
         tasks: 'scripts'
