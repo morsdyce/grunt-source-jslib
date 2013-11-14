@@ -31,6 +31,13 @@ module.exports = (grunt) ->
       scripts:
         files: ['vendor/**/*.js','src/**/*.{js,coffee}']
         tasks: 'scripts'
+
+    #file server
+    connect:
+      server:
+        options:
+          port: 3000
+
     #tasks
     coffee:
       compile:
@@ -85,4 +92,4 @@ module.exports = (grunt) ->
 
   grunt.registerTask "scripts", ["coffee","concat","uglify"]
   grunt.registerTask "package", pkg
-  grunt.registerTask "default", ["package","scripts","watch"]
+  grunt.registerTask "default", ["package","scripts","connect","watch"]
