@@ -1,3 +1,5 @@
+
+
 module.exports = (grunt) ->
 
   #load creds
@@ -7,8 +9,7 @@ module.exports = (grunt) ->
   grunt.source.loadAllTasks()
 
   versions = grunt.source.version.split('.')
-  compat = versions[0]
-  compat += "." + versions[1] if compat is "0"
+  compat = versions[0] + (if versions[0] is "0" then "." + versions[1] else "")
 
   #jquery plugin
   jquery = grunt.source.jquery
@@ -16,7 +17,6 @@ module.exports = (grunt) ->
   #initialise config
   grunt.initConfig
     source: grunt.source
-
     compat: compat
     dist: "dist/<%= compat %>/<%= source.name %>"
 
@@ -24,6 +24,7 @@ module.exports = (grunt) ->
       // <%= source.title %> - v<%= source.version %> - <%= source.homepage %>
       // <%= source.author %> - <%= source.license %> Copyright <%= grunt.template.today(\"yyyy\") %>\n
       """
+
     #watcher
     watch:
       options:
@@ -38,7 +39,7 @@ module.exports = (grunt) ->
         options:
           hostname: "0.0.0.0"
           port: 3000
-
+          
     #tasks
     coffee:
       compile:
@@ -59,8 +60,8 @@ module.exports = (grunt) ->
     concat:
       wrap:
         options:
-          banner: "<%= banner %>(function(window,document#{if jquery then ',$' else ''},undefined) {\n"
-          footer: "}(window,document#{if jquery then ',jQuery' else ''}));"
+          banner: "<%= banner %>(function(window#{if jquery then',$'else''},undefined) {"
+          footer: "}(this#{if jquery then',jQuery'else''}));"
         src: ['vendor/**/*.js', 'src/**/*.js', '<%= dist %>.js']
         dest: '<%= dist %>.js'
 
@@ -88,9 +89,15 @@ module.exports = (grunt) ->
         src: "<%= dist %>.js"
         dest: "<%= source.name %>/<%= compat %>.min.js"
 
-  pkg = []
+  pkg = ["bower"]
   pkg.push "jquery" if jquery
 
   grunt.registerTask "scripts", ["coffee","concat","uglify"]
   grunt.registerTask "package", pkg
-  grunt.registerTask "default", ["package","scripts","connect","watch"]
+
+
+  def = ["package","scripts"]
+  def.push "connect" if grunt.option("server")
+  def.push "watch"
+
+  grunt.registerTask "default", def
