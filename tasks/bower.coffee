@@ -9,7 +9,7 @@ module.exports = (grunt) ->
       main: dist
       description: grunt.source.description
       license: grunt.source.license
-      ignore: ["./!(#{dist})"]
+      ignore: ["!#{dist}"]
       dependencies: {}
       devDependencies: {}
     grunt.file.write "bower.json", JSON.stringify bower, null, 2
