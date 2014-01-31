@@ -14,6 +14,8 @@ module.exports = (grunt) ->
   #jquery plugin
   jquery = grunt.source.jquery
 
+  serverPort = grunt.option("server")
+
   #initialise config
   grunt.initConfig
     source: grunt.source
@@ -38,7 +40,7 @@ module.exports = (grunt) ->
       server:
         options:
           hostname: "0.0.0.0"
-          port: 3000
+          port: serverPort or 3000
           
     #tasks
     coffee:
@@ -97,7 +99,7 @@ module.exports = (grunt) ->
 
 
   def = ["package","scripts"]
-  def.push "connect" if grunt.option("server")
+  def.push "connect" if serverPort
   def.push "watch"
 
   grunt.registerTask "default", def
