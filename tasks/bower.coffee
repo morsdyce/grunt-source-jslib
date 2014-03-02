@@ -1,13 +1,16 @@
 module.exports = (grunt) ->
 
   grunt.registerTask "bower", ->
+    
+    src = grunt.source
     dist = grunt.config("dist") + ".js"
+
     bower =
-      name: "jpillora/#{grunt.source.name}"
-      version: grunt.source.version
+      name: src.repoId or "jpillora/#{src.name}"
+      version: src.version
       main: dist
-      description: grunt.source.description
-      license: grunt.source.license
+      description: src.description
+      license: src.license
       ignore: ["*", "!bower.json", "!#{dist}"]
       dependencies: {}
       devDependencies: {}

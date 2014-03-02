@@ -13,6 +13,8 @@ module.exports = (grunt) ->
 
   #jquery plugin
   jquery = grunt.source.jquery
+  #gen bower.json
+  bower = grunt.source.bower
 
   serverPort = grunt.option("server")
 
@@ -91,7 +93,8 @@ module.exports = (grunt) ->
         src: "<%= dist %>.js"
         dest: "<%= source.name %>/<%= compat %>.min.js"
 
-  pkg = ["bower"]
+  pkg = []
+  pkg.push "bower" if bower
   pkg.push "jquery" if jquery
 
   grunt.registerTask "scripts", ["coffee","concat","uglify"]

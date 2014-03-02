@@ -15,23 +15,37 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 
 * Create a `Gruntsource.json`:
 
-``` json
-{
-  "name": "...",
-  "title": "...",
-  "version": "0.1.0",
-  "homepage": "https://github.com/jpillora/...",
-  "author": "Jaime Pillora <dev@jpillora.com>",
-  "source": "~/Code/JavaScript/grunt-source-jslib",
-  "repo": "https://github.com/jpillora/grunt-source-jslib.git"
-}
-```
+  ``` json
+  {
+    "name": "...",
+    "title": "...",
+    "version": "0.1.0",
+    "homepage": "https://github.com/jpillora/...",
+    "author": "Jaime Pillora <dev@jpillora.com>",
+    "source": "~/Code/JavaScript/grunt-source-jslib",
+    "repo": "https://github.com/jpillora/grunt-source-jslib.git",
+    "jquery": false,
+    "bower": true
+  }
+  ```
+    * `jquery` denotes whether to create jQuery plugin manifest
+    * `bower` denotes whether to create bower manifest
+
+* Optionally create a `vendor/` directory with some `*.js` files
+
+* Create `src/` directory with some `*.js|coffee` files
 
 * Run `grunt-source`
 
+## Grunt Options
+
+* Web Server `--server=<port>`
+* Live Reload `--livereload=true`
+* Show Filesize Report `--report=true`
+
 ## Customising
 
-1. Fork [this repo](https://github.com/jpillora/grunt-source-web)
+1. Fork [this repo](https://github.com/jpillora/grunt-source-jslib)
 2. Edit your `GruntSource.json` file's `repo` to be the new Git URL
 3. Edit your `GruntSource.json` file's `source` to reference a new directory
 4. Rerun `grunt-source`
