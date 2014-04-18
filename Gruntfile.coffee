@@ -64,8 +64,8 @@ module.exports = (grunt) ->
     concat:
       wrap:
         options:
-          banner: "<%= banner %>(function(window#{if jquery then',$'else''},undefined) {"
-          footer: "}(this#{if jquery then',jQuery'else''}));"
+          banner: "<%= banner %>(function(window,#{if jquery then'$,'else''}undefined) {"
+          footer: "}.call(this,window#{if jquery then',jQuery'else''}));"
         src: ['vendor/**/*.js', 'src/**/*.js', '<%= dist %>.js']
         dest: '<%= dist %>.js'
 
