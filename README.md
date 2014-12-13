@@ -6,6 +6,16 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 
 ## Features
 
+Provides a `default` task which:
+
+1. Assumes you have `src/` directory
+1. Checks if there are `.coffee` files in `src/`
+1. If CoffeeScript, then compile all `src/*.coffee` into `dist/<source.name>.js`
+1. If JavaScript, then concat all `src/*.js` into `dist/<source.name>.js`
+1. Uglify result into `dist/<source.name>.min.js`
+
+## Features
+
 * Compile your CoffeeScript
 * Minified version
 
@@ -40,10 +50,10 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 ## Grunt Options
 
 * Web Server `--server=<port>`
-* Live Reload `--livereload=true`
+* Live Reload `--livereload=false`
 * Show Filesize Report `--report=true`
 
-## Customising
+## Contributing
 
 1. Fork [this repo](https://github.com/jpillora/grunt-source-jslib)
 2. Edit your `GruntSource.json` file's `repo` to be the new Git URL
@@ -51,6 +61,10 @@ utilizing [Grunt Source](https://github.com/jpillora/grunt-source).
 4. Rerun `grunt-source`
 5. Push your changes
 6. Pull-request for others to enjoy
+
+## Todo
+
+* Come up with a `test` task which applies to most JS libraries
 
 #### MIT License
 

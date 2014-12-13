@@ -1,28 +1,22 @@
-
+glob = require "glob-all"
 
 module.exports = (grunt) ->
 
-  #load creds
-  aws = if grunt.file.exists "aws.json" then grunt.file.readJSON "aws.json" else {}
-
   #load external tasks and change working directory
   grunt.source.loadAllTasks()
-
-  versions = grunt.source.version.split('.')
-  compat = versions[0] + (if versions[0] is "0" then "." + versions[1] else "")
 
   #jquery plugin
   jquery = grunt.source.jquery
   #gen bower.json
   bower = grunt.source.bower
-
+  #server cli option
   serverPort = grunt.option("server")
+  serverPort = 3000 if serverPort is true
 
   #initialise config
   grunt.initConfig
     source: grunt.source
-    compat: compat
-    dist: "dist/<%= compat %>/<%= source.name %>"
+    dist: "dist/<%= source.name %>"
 
     banner: """
       // <%= source.title %> - v<%= source.version %> - <%= source.homepage %>
@@ -34,7 +28,7 @@ module.exports = (grunt) ->
       options:
         livereload: grunt.option('livereload')
       scripts:
-        files: ['vendor/**/*.js','src/**/*.{js,coffee}']
+        files: ['Gruntsource.json','vendor/**/*.js','src/**/*.{js,coffee}']
         tasks: 'scripts'
 
     #file server
@@ -42,7 +36,7 @@ module.exports = (grunt) ->
       server:
         options:
           hostname: "0.0.0.0"
-          port: serverPort or 3000
+          port: serverPort
           
     #tasks
     coffee:
@@ -60,13 +54,22 @@ module.exports = (grunt) ->
           bare: true
           join: true
           sourceMap: grunt.option("source-map")
-
     concat:
+      vanilla:
+        files:
+          #init then all then run
+          "<%= dist %>.js": [
+            "src/init.js",
+            "src/**/*.js",
+            #remove and re-add to insert at bottom
+            "!src/run.js",
+            "src/run.js"
+          ]
       wrap:
         options:
-          banner: "<%= banner %>(function(window,#{if jquery then'$,'else''}undefined) {"
-          footer: "}.call(this,window#{if jquery then',jQuery'else''}));"
-        src: ['vendor/**/*.js', 'src/**/*.js', '<%= dist %>.js']
+          banner: "<%= banner %>(function(window,#{if jquery then'$,'else''}undefined) {\n"
+          footer: "\n}.call(this,window#{if jquery then',jQuery'else''}));"
+        src: ['vendor/**/*.js', '<%= dist %>.js']
         dest: '<%= dist %>.js'
 
     uglify:
@@ -77,29 +80,16 @@ module.exports = (grunt) ->
         files:
           "<%= dist %>.min.js": "<%= dist %>.js"
 
-    aws: aws
-    s3:
-      options:
-        accessKeyId: "<%= aws.accessKeyId %>"
-        secretAccessKey: "<%= aws.secretAccessKey %>"
-      aus:
-        options:
-          bucket: "jpillora-aus"
-        src: "<%= dist %>.js"
-        dest: "<%= source.name %>/<%= compat %>.min.js"
-      usa:
-        options:
-          bucket: "jpillora-usa"
-        src: "<%= dist %>.js"
-        dest: "<%= source.name %>/<%= compat %>.min.js"
-
   pkg = []
   pkg.push "bower" if bower
   pkg.push "jquery" if jquery
 
-  grunt.registerTask "scripts", ["coffee","concat","uglify"]
-  grunt.registerTask "package", pkg
+  #choose between coffeescript or javascript
+  compileTask = if glob.sync("src/**/*.coffee")?.length > 0 then "coffee" else "concat:vanilla"
+  grunt.log.ok "task: #{compileTask}"
 
+  grunt.registerTask "scripts", [compileTask,"concat:wrap","uglify"]
+  grunt.registerTask "package", pkg
 
   def = ["package","scripts"]
   def.push "connect" if serverPort
