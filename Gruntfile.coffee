@@ -85,7 +85,7 @@ module.exports = (grunt) ->
   pkg.push "jquery" if jquery
 
   #choose between coffeescript or javascript
-  compileTask = if glob.sync("src/**/*.coffee")?.length > 0 then "coffee" else "concat:vanilla"
+  compileTask = if glob.sync("src/**/*.coffee")?.length > 0 then "coffee -bare" else "concat:vanilla"
   grunt.log.ok "task: #{compileTask}"
 
   grunt.registerTask "scripts", [compileTask,"concat:wrap","uglify"]
